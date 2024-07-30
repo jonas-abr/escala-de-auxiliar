@@ -301,10 +301,10 @@
         // Configura as opções para o html2pdf
          const opt = {
             margin: [0.5, 0.5, 0.5, 0.5], // Margens para o PDF
-            filename: 'tabela.pdf',
+            filename: 'escala-de-auxiliar.pdf',
             image: { type: 'jpeg', quality: 0.98 },
             html2canvas: { scale: 2 }, // Escala do canvas para melhorar a qualidade
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' } // Orientação landscape para mais espaço horizontal
+            jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
           };
 
         html2pdf().set(opt).from(pdfElement).save();
