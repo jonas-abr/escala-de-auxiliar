@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lista de Auxiliares</title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        font-family: Arial, sans-serif;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      h1 {
+        margin-bottom: 20px; /* Espaço abaixo do título */
+        font-size: 2em; /* Tamanho do texto ajustável */
+      }
+      .table-container {
+        width: 100%;
+        max-width: 100%; /* Garante que o contêiner da tabela não exceda a largura da tela */
+        overflow-x: auto; /* Permite rolagem horizontal */
+        display: flex;
+        justify-content: center; /* Centraliza a tabela horizontalmente */
+      }
+      table {
+        border-collapse: collapse;
+        table-layout: auto; /* Ajusta as colunas automaticamente com base no conteúdo */
+        margin-top: 20px; /* Espaço acima da tabela */
+      }
+      table,
+      th,
+      td {
+        border: 1px solid black;
+      }
+      th,
+      td {
+        padding: 8px;
+        text-align: left;
+        white-space: nowrap; /* Impede que o texto quebre para a linha seguinte */
+      }
+      th {
+        background-color: #f2f2f2;
+      }
+      .input-group {
+        margin-bottom: 20px;
+        width: 100%;
+        max-width: 600px; /* Define uma largura máxima para os inputs */
+      }
+      .input-group label {
+        display: block;
+        margin-bottom: 5px; /* Espaço abaixo do rótulo */
+        font-weight: bold;
+        font-size: 1em; /* Tamanho do texto ajustável */
+      }
+      .input-group input[type="text"],
+      .input-group input[type="date"] {
+        width: 100%; /* Faz com que o input ocupe toda a largura disponível */
+        padding: 8px;
+        font-size: 1em; /* Tamanho do texto ajustável */
+        box-sizing: border-box; /* Inclui padding e border na largura total */
+      }
+      button {
+        padding: 10px 20px;
+        font-size: 1em; /* Tamanho do texto ajustável */
+        cursor: pointer;
+        margin-bottom: 20px; /* Espaço abaixo do botão */
+        border: none;
+        background-color: #007bff;
+        color: white;
+        border-radius: 5px;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+      .button-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 20px;
+      }
+      .alert {
+        display: none;
+        padding: 15px;
+        margin-bottom: 20px;
+        border: 1px solid transparent;
+        border-radius: 5px;
+        font-size: 1em;
+        color: #721c24;
+        background-color: #f8d7da;
+        border-color: #f5c6cb;
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        text-align: center;
+      }
+      .alert.success {
+        color: #155724;
+        background-color: #d4edda;
+        border-color: #c3e6cb;
+      }
+      .alert.info {
+        color: #004085;
+        background-color: #cce5ff;
+        border-color: #b8daff;
+      }
+      .alert.warning {
+        color: #856404;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+      }
+      .alert .closebtn {
+        position: absolute;
+        top: 0;
+        right: 0;
+        padding: 15px;
+        cursor: pointer;
+      }
+      .pdf-title {
+        text-align: center;
+        margin: 20px 0;
+        font-size: 24px;
+        font-weight: bold;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+  </head>
+  <body>
+    <h1>Lista de Auxiliares</h1>
+
+    <div class="input-group">
+      <label for="namesInput">Insira os nomes separados por vírgula:</label>
+      <input type="text" id="namesInput" placeholder="Jonas, Fernando, Rafael, Gefferson, Samuel, Bernardo" />
+    </div>
+
+    <div class="input-group">
+      <label for="startDateInput">Selecione a data de início:</label>
+      <input type="date" id="startDateInput" value="2024-08-05" />
+    </div>
+
+    <div class="input-group">
+      <label for="endDateInput">Selecione a data de fim:</label>
+      <input type="date" id="endDateInput" value="2024-12-30" />
+    </div>
+
+    <button onclick="updateTable()">Atualizar Tabela</button>
+
+    <div class="alert" id="alert">
+      <span class="closebtn" onclick="closeAlert()">&times;</span>
+      <span id="alertMessage"></span>
+    </div>
+
+    <div class="table-container">
+      <table id="auxTable"></table>
+    </div>
+
+    <div class="button-container">
+      <button onclick="generatePDF()">Gerar PDF</button>
+    </div>
+
+    <script>
+      function showAlert(message, type = 'info') {
+        const alertElement = document.getElementById('alert');
+        const alertMessage = document.getElementById('alertMessage');
+
+        alertMessage.textContent = message;
+        alertElement.className = `alert ${type}`;
+        alertElement.style.display = 'block';
+      }
+
+      function closeAlert() {
+        document.getElementById('alert').style.display = 'none';
+      }
+
+      function createTable(names, startDate, endDate) {
+        const table = document.getElementById("auxTable");
+        const headers = [
+          "Data",
+          "Oração",
+          "Crianças",
+          "Meninos",
+          "Moços",
+          "Individuais",
+        ];
+
+        // Limpa a tabela existente
+        table.innerHTML = '';
+
+        // Cria o cabeçalho da tabela
+        const thead = document.createElement("thead");
+        const headerRow = document.createElement("tr");
+
+        headers.forEach((headerText) => {
+          const th = document.createElement("th");
+          th.textContent = headerText;
+          headerRow.appendChild(th);
+        });
+
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        // Cria o corpo da tabela
+        const tbody = document.createElement("tbody");
+
+        let date = new Date(startDate);
+        endDate = new Date(endDate);
+        let nameIndex = 0;
+
+        while (date <= endDate) {
+          const row = document.createElement("tr");
+
+          // Adiciona a data
+          const dateCell = document.createElement("td");
+          dateCell.textContent = date.toLocaleDateString("pt-BR", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit",
+          });
+          row.appendChild(dateCell);
+
+          // Adiciona os nomes alternados
+          headers.slice(1).forEach(() => {
+            const td = document.createElement("td");
+            td.textContent = names[nameIndex];
+            nameIndex = (nameIndex + 1) % names.length; // Alterna entre os nomes
+            row.appendChild(td);
+          });
+
+          tbody.appendChild(row);
+
+          // Avança para o próximo domingo
+          date.setDate(date.getDate() + 7);
+        }
+
+        table.appendChild(tbody);
+      }
+
+      function updateTable() {
+        const namesInput = document.getElementById("namesInput").value;
+        const names = namesInput.split(",").map(name => name.trim()).filter(name => name); // Remove espaços e nomes vazios
+        
+        const startDateInput = document.getElementById("startDateInput").value;
+        const endDateInput = document.getElementById("endDateInput").value;
+
+        // Define startDate como a data fornecida, ajustando para o início do dia
+        const startDate = startDateInput ? new Date(startDateInput + 'T00:00:00') : new Date();
+
+        // Define endDate como a data fornecida ou a data atual mais 6 meses
+        const endDate = endDateInput ? new Date(endDateInput + 'T23:59:59') : (() => {
+            const today = new Date(); // Pega a data atual
+            const sixMonthsLater = new Date(today); // Cria uma nova instância de data com a data atual
+            sixMonthsLater.setMonth(today.getMonth() + 6); // Adiciona 6 meses
+            sixMonthsLater.setHours(23, 59, 59, 999); // Ajusta para o final do dia
+            return sixMonthsLater; // Retorna a data com 6 meses adicionados
+        })();
+
+        if (names.length === 0) {
+          showAlert("Por favor, insira pelo menos um nome.", "warning");
+          return;
+        }
+
+        if (startDate > endDate) {
+          showAlert("A data de início não pode ser posterior à data de fim.", "warning");
+          return;
+        }
+
+        createTable(names, startDate, endDate);
+      }
+
+      function generatePDF() {
+        const tableElement = document.querySelector("#auxTable");
+
+        // Cria o título e a tabela para o PDF
+        const pdfElement = document.createElement('div');
+        const title = document.createElement('div');
+        title.className = 'pdf-title';
+        title.textContent = 'Lista de Auxiliares';
+
+        pdfElement.appendChild(title);
+        pdfElement.appendChild(tableElement.cloneNode(true)); // Clona a tabela para o PDF
+
+        // Configura as opções para o html2pdf
+        const opt = {
+          margin: 1,
+          filename: 'tabela.pdf',
+          image: { type: 'jpeg', quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+
+        html2pdf().set(opt).from(pdfElement).save();
+      }
+
+      // Cria a tabela inicialmente com os nomes padrão e datas padrão
+      const defaultNames = [
+        "Jonas",
+        "Fernando",
+        "Rafael",
+        "Gefferson",
+        "Samuel",
+        "Bernardo",
+      ];
+      createTable(defaultNames, new Date("2024-08-05T00:00:00"), new Date("2024-12-30T23:59:59"));
+    </script>
+  </body>
+</html>
