@@ -29,6 +29,7 @@
         border-collapse: collapse;
         table-layout: auto; /* Ajusta as colunas automaticamente com base no conteúdo */
         margin-top: 20px; /* Espaço acima da tabela */
+        min-width: 100%; /* Ajusta a tabela para ocupar 100% da largura do contêiner */
       }
       table,
       th,
@@ -124,6 +125,20 @@
         font-size: 24px;
         font-weight: bold;
       }
+
+      /* CSS para o efeito de rolagem horizontal com rolagem a partir da coluna Data */
+      @media (max-width: 621px) {
+        .table-container {
+          overflow-x: auto; /* Permite rolagem horizontal */
+        }
+        table {
+          min-width: 800px; /* Ajusta a largura mínima para garantir que todas as colunas sejam visíveis com rolagem horizontal */
+        }
+        .table-wrapper {
+          display: block;
+          min-width: 100%; /* Garante que o wrapper da tabela ocupe 100% da largura do contêiner */
+        }
+      }
     </style>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
   </head>
@@ -153,7 +168,9 @@
     </div>
 
     <div class="table-container">
-      <table id="auxTable"></table>
+      <div class="table-wrapper">
+        <table id="auxTable"></table>
+      </div>
     </div>
 
     <div class="button-container">
