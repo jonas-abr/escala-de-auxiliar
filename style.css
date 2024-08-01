@@ -1,0 +1,141 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    box-sizing: border-box;
+  }
+  h1 {
+    margin-bottom: 20px; /* Espaço abaixo do título */
+    font-size: 2em; /* Tamanho do texto ajustável */
+  }
+  .table-container {
+    width: 100%;
+    max-width: 100%; /* Garante que o contêiner da tabela não exceda a largura da tela */
+    overflow-x: auto; /* Permite rolagem horizontal */
+    display: flex;
+    justify-content: center; /* Centraliza a tabela horizontalmente */
+  }
+  table {
+    border-collapse: collapse;
+    table-layout: auto; /* Ajusta as colunas automaticamente com base no conteúdo */
+    margin-top: 20px; /* Espaço acima da tabela */
+    min-width: 100%; /* Ajusta a tabela para ocupar 100% da largura do contêiner */
+  }
+  table,
+  th,
+  td {
+    border: 1px solid black;
+  }
+  th,
+  td {
+    padding: 8px;
+    text-align: left;
+    white-space: nowrap; /* Impede que o texto quebre para a linha seguinte */
+  }
+  th {
+    background-color: #f2f2f2;
+  }
+  td[contenteditable="true"] {
+    background-color: #f9f9f9;
+    cursor: text;
+  }
+  .input-group {
+    margin-bottom: 20px;
+    width: 100%;
+    max-width: 600px; /* Define uma largura máxima para os inputs */
+  }
+  .input-group label {
+    display: block;
+    margin-bottom: 5px; /* Espaço abaixo do rótulo */
+    font-weight: bold;
+    font-size: 1em; /* Tamanho do texto ajustável */
+  }
+  .input-group input[type="text"],
+  .input-group input[type="date"] {
+    width: 100%; /* Faz com que o input ocupe toda a largura disponível */
+    padding: 8px;
+    font-size: 1em; /* Tamanho do texto ajustável */
+    box-sizing: border-box; /* Inclui padding e border na largura total */
+  }
+  button {
+    padding: 10px 20px;
+    font-size: 1em; /* Tamanho do texto ajustável */
+    cursor: pointer;
+    margin-bottom: 20px; /* Espaço abaixo do botão */
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+  }
+  button:hover {
+    background-color: #0056b3;
+  }
+  .button-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+  }
+  .button-container button {
+    display: none; /* Inicialmente oculta o botão de gerar PDF */
+  }
+  .alert {
+    display: none;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    font-size: 1em;
+    color: #721c24;
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+  }
+  .alert.success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+  }
+  .alert.info {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+  }
+  .alert.warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+  }
+  .alert .closebtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 15px;
+    cursor: pointer;
+  }
+  .pdf-title {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  /* CSS para o efeito de rolagem horizontal com rolagem a partir da coluna Data */
+  @media (max-width: 621px) {
+    .table-container {
+      overflow-x: auto; /* Permite rolagem horizontal */
+    }
+    table {
+      min-width: 800px; /* Ajusta a largura mínima para garantir que todas as colunas sejam visíveis com rolagem horizontal */
+    }
+    .table-wrapper {
+      display: block;
+      min-width: 100%; /* Garante que o wrapper da tabela ocupe 100% da largura do contêiner */
+    }
+  }
