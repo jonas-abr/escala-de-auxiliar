@@ -80,18 +80,36 @@ function createTable(names, startDate, endDate) {
 
 function updateTable() {
   const namesInput = document.getElementById("namesInput").value;
-  const names = namesInput.split(",").map(name => name.trim()).filter(name => name);
-  const startDate = document.getElementById("startDateInput").value;
-  const endDate = document.getElementById("endDateInput").value;
+  const names = namesInput.split(",").map(name => name.trim()).filter(name => name); // Remove espaços e nomes vazios
+
+  const startDateInput = document.getElementById("startDateInput").value;
+  const endDateInput = document.getElementById("endDateInput").value;
+
+  // Define startDate como a data fornecida, ajustando para o início do dia
+  const startDate = startDateInput ? new Date(startDateInput + 'T00:00:00') : new Date();
+
+  // Define endDate como a data fornecida ou a data atual mais 6 meses
+  const endDate = endDateInput ? new Date(endDateInput + 'T23:59:59') : (() => {
+      const today = new Date(); // Pega a data atual
+      const sixMonthsLater = new Date(today); // Cria uma nova instância de data com a data atual
+      sixMonthsLater.setMonth(today.getMonth() + 6); // Adiciona 6 meses
+      sixMonthsLater.setHours(23, 59, 59, 999); // Ajusta para o final do dia
+      return sixMonthsLater; // Retorna a data com 6 meses adicionados
+  })();
 
   if (names.length === 0) {
     showAlert("Por favor, insira pelo menos um nome.", "warning");
     return;
   }
 
+  if (startDate > endDate) {
+    showAlert("A data de início não pode ser posterior à data de fim.", "warning");
+    return;
+  }
+
   createTable(names, startDate, endDate);
-  showAlert("Tabela criada com sucesso!", "success");
 }
+
 function generatePDF() {
     const tableElement = document.querySelector("#auxTable");
 
