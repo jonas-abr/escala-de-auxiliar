@@ -29,7 +29,7 @@
         border-collapse: collapse;
         table-layout: auto; /* Ajusta as colunas automaticamente com base no conteúdo */
         margin-top: 20px; /* Espaço acima da tabela */
-        min-width: 100%; /* Ajusta a tabela para ocupar 100% da largura do contêiner */
+        width: 100%; /* Ajusta a tabela para ocupar 100% da largura do contêiner */
       }
       table,
       th,
@@ -44,6 +44,10 @@
       }
       th {
         background-color: #f2f2f2;
+      }
+      td[contenteditable="true"] {
+        background-color: #f9f9f9;
+        cursor: text;
       }
       .input-group {
         margin-bottom: 20px;
@@ -81,6 +85,9 @@
         flex-direction: column;
         align-items: center;
         margin-top: 20px;
+      }
+      .button-container button {
+        display: none; /* Inicialmente oculta o botão de gerar PDF */
       }
       .alert {
         display: none;
@@ -156,11 +163,11 @@
     </div>
 
     <div class="input-group">
-      <label for="endDateInput">Selecione a data fim:</label>
+      <label for="endDateInput">Selecione a data de fim:</label>
       <input type="date" id="endDateInput" value="2024-12-30" />
     </div>
 
-    <button onclick="updateTable()">Atualizar Tabela</button>
+    <button onclick="updateTable()">Criar Tabela</button>
 
     <div class="alert" id="alert">
       <span class="closebtn" onclick="closeAlert()">&times;</span>
@@ -174,7 +181,7 @@
     </div>
 
     <div class="button-container">
-      <button onclick="generatePDF()">Gerar PDF</button>
+      <button id="generatePDFButton" onclick="generatePDF()">Gerar PDF</button>
     </div>
 
     <script>
@@ -237,12 +244,13 @@
           });
           row.appendChild(dateCell);
 
-          // Adiciona os nomes alternados
+          // Adiciona os nomes alternados e torna as células editáveis
           headers.slice(1).forEach(() => {
             const td = document.createElement("td");
             td.textContent = names[nameIndex];
-            nameIndex = (nameIndex + 1) % names.length; // Alterna entre os nomes
+            td.contentEditable = "true"; // Torna a célula editável
             row.appendChild(td);
+            nameIndex = (nameIndex + 1) % names.length; // Alterna entre os nomes
           });
 
           tbody.appendChild(row);
@@ -252,74 +260,36 @@
         }
 
         table.appendChild(tbody);
+
+        // Exibe o botão de gerar PDF
+        document.getElementById('generatePDFButton').style.display = 'block';
       }
 
       function updateTable() {
         const namesInput = document.getElementById("namesInput").value;
-        const names = namesInput.split(",").map(name => name.trim()).filter(name => name); // Remove espaços e nomes vazios
-        
-        const startDateInput = document.getElementById("startDateInput").value;
-        const endDateInput = document.getElementById("endDateInput").value;
-
-        // Define startDate como a data fornecida, ajustando para o início do dia
-        const startDate = startDateInput ? new Date(startDateInput + 'T00:00:00') : new Date();
-
-        // Define endDate como a data fornecida ou a data atual mais 6 meses
-        const endDate = endDateInput ? new Date(endDateInput + 'T23:59:59') : (() => {
-            const today = new Date(); // Pega a data atual
-            const sixMonthsLater = new Date(today); // Cria uma nova instância de data com a data atual
-            sixMonthsLater.setMonth(today.getMonth() + 6); // Adiciona 6 meses
-            sixMonthsLater.setHours(23, 59, 59, 999); // Ajusta para o final do dia
-            return sixMonthsLater; // Retorna a data com 6 meses adicionados
-        })();
+        const names = namesInput.split(",").map(name => name.trim()).filter(name => name);
+        const startDate = document.getElementById("startDateInput").value;
+        const endDate = document.getElementById("endDateInput").value;
 
         if (names.length === 0) {
           showAlert("Por favor, insira pelo menos um nome.", "warning");
           return;
         }
 
-        if (startDate > endDate) {
-          showAlert("A data de início não pode ser posterior à data de fim.", "warning");
-          return;
-        }
-
         createTable(names, startDate, endDate);
+        showAlert("Tabela criada com sucesso!", "success");
       }
 
       function generatePDF() {
-        const tableElement = document.querySelector("#auxTable");
-
-        // Cria o título e a tabela para o PDF
-        const pdfElement = document.createElement('div');
-        const title = document.createElement('div');
-        title.className = 'pdf-title';
-        title.textContent = 'Lista de Auxiliares';
-
-        pdfElement.appendChild(title);
-        pdfElement.appendChild(tableElement.cloneNode(true)); // Clona a tabela para o PDF
-
-        // Configura as opções para o html2pdf
-         const opt = {
-            margin: [0.5, 0.5, 0.5, 0.5], // Margens para o PDF
-            filename: 'escala-de-auxiliar.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 }, // Escala do canvas para melhorar a qualidade
-            jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
-          };
-
-        html2pdf().set(opt).from(pdfElement).save();
+        const element = document.querySelector(".table-container");
+        const opt = {
+          margin: [10, 0, 10, 0],
+          filename: 'lista_de_auxiliares.pdf',
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+        html2pdf().set(opt).from(element).save();
       }
-
-      // Cria a tabela inicialmente com os nomes padrão e datas padrão
-      const defaultNames = [
-        "Jonas",
-        "Fernando",
-        "Rafael",
-        "Gefferson",
-        "Samuel",
-        "Bernardo",
-      ];
-      createTable(defaultNames, new Date("2024-08-05T00:00:00"), new Date("2024-12-30T23:59:59"));
     </script>
   </body>
 </html>
