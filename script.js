@@ -107,10 +107,10 @@ function generatePDF() {
     // Configura as opções para o html2pdf
     const opt = {
       margin: 1,
-      filename: 'tabela.pdf',
+      filename: 'rodizio-auxiliares.pdf',
       image: { type: 'jpeg', quality: 0.98 },
       html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+      jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
     };
 
     html2pdf().set(opt).from(pdfElement).save();
