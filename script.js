@@ -162,25 +162,118 @@ function updateTable() {
 }
 
 function generatePDF() {
-    const tableElement = document.querySelector("#auxTable");
+  const tableElement = document.querySelector("#auxTable");
 
-    // Cria o título e a tabela para o PDF
-    const pdfElement = document.createElement('div');
-    const title = document.createElement('div');
-    title.className = 'pdf-title';
-    title.textContent = 'Lista de Auxiliares';
+   // Obter o valor da "Comum Congregação" selecionada
+   const comumCongregacao = document.getElementById("congregationInput").value;
 
-    pdfElement.appendChild(title);
-    pdfElement.appendChild(tableElement.cloneNode(true)); // Clona a tabela para o PDF
+   // Obter o ano da data de início
+   const startDateInput = document.getElementById('startDateInput');
+   const startYear = new Date(startDateInput.value).getFullYear();
+ 
+   // Cria o título e o contêiner para o PDF
+   const pdfElement = document.createElement('div');
+   const title = document.createElement('div');
+   title.className = 'pdf-title';
+   
+   // Formata o título conforme solicitado
+   title.innerHTML = `ESCALA DE AUXILIARES<br>${comumCongregacao.toUpperCase()}<br>${startYear}`;
+   title.style.textAlign = 'center';
+   title.style.fontWeight = 'bold';
+   title.style.fontSize = '18px';
+   title.style.marginBottom = '20px'; // Adiciona espaçamento abaixo do título
+   
+   pdfElement.appendChild(title);
 
-    // Configura as opções para o html2pdf
-    const opt = {
-      margin: 1,
-      filename: 'rodizio-auxiliares.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'in', format: 'letter', orientation: 'landscape' }
-    };
+  // Clone a tabela e agrupe por mês
+  const clonedTable = tableElement.cloneNode(true);
+  const rows = clonedTable.querySelectorAll("tr");
 
-    html2pdf().set(opt).from(pdfElement).save();
+  // Objeto para armazenar tabelas agrupadas por mês
+  const monthsGrouped = {};
+
+  rows.forEach(row => {
+    const dateCell = row.querySelector("td"); // A primeira célula da linha é a data
+    if (dateCell) {
+      // Extraímos a data como string (assumimos o formato "dd/mm/yyyy")
+      const dateStr = dateCell.textContent;
+      
+      // Se a data estiver no formato "dd/mm/yyyy", separamos em partes e criamos um objeto Date
+      const [day, month, year] = dateStr.split('/').map(Number); // Converte as partes para números
+      const date = new Date(year, month - 1, day); // Mês em JavaScript é zero-indexado (0 = Janeiro, 1 = Fevereiro, etc.)
+      
+      // Obtemos o nome do mês
+      const monthName = date.toLocaleString("pt-BR", { month: "long" }); // Exemplo: Janeiro, Fevereiro
+
+      // Exibimos o dia e o número do mês no formato "dd/mm" com zero à esquerda quando necessário
+    const dayAndMonth = `${day < 10 ? '0' + day : day}/${month + 1 < 10 ? '0' + (month + 1) : month + 1}`;
+
+      // Atualiza a célula da data no PDF com o novo formato
+      dateCell.textContent = dayAndMonth; // Exibe no formato "dd Mês"
+
+      // Se o mês ainda não existir no objeto, cria uma nova chave para ele
+      if (!monthsGrouped[monthName]) {
+        monthsGrouped[monthName] = [];
+      }
+
+      // Adiciona a linha à tabela do respectivo mês
+      monthsGrouped[monthName].push(row);
+    }
+  });
+
+  // Agora, para cada mês, cria uma nova tabela com o título do mês
+  for (const month in monthsGrouped) {
+    
+    const monthTitle = document.createElement('div');
+    monthTitle.textContent = month;
+    monthTitle.textContent = month.toUpperCase();
+    monthTitle.style.textAlign = 'center'; // Centraliza o título
+    monthTitle.style.fontWeight = 'bold'; // Aplica o negrito ao título do mês
+    monthTitle.style.marginTop = '20px'; // Adiciona margem superior para separar do conteúdo anterior
+    pdfElement.appendChild(monthTitle);
+
+    // Cria a tabela para esse mês
+    const monthTable = document.createElement('table');
+
+    // Adiciona o cabeçalho à tabela
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    const headers = ["Data", "Oração", "Crianças", "Meninos(as)", "Moços(as)", "Individuais"];
+    
+    headers.forEach(headerText => {
+      const th = document.createElement('th');
+      th.textContent = headerText;
+      headerRow.appendChild(th);
+    });
+
+    thead.appendChild(headerRow);
+    monthTable.appendChild(thead);
+
+    // Adiciona as linhas desse mês à tabela
+    const tbody = document.createElement('tbody');
+    monthsGrouped[month].forEach(row => {
+      tbody.appendChild(row);
+    });
+
+    monthTable.appendChild(tbody);
+
+    // Adiciona a tabela ao PDF
+    pdfElement.appendChild(monthTable);
   }
+
+  // Configura as opções para o html2pdf
+  const opt = {
+    margin: [0.1, 1, 1, 1], // Define a margem do topo menor (0.5) e as margens laterais (1)
+    filename: 'rodizio-auxiliares.pdf',
+    image: { type: 'jpeg', quality: 0.98 },
+    html2canvas: { scale: 2 },
+    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait'}
+  };
+
+  // Gera o PDF com as tabelas agrupadas por mês
+  html2pdf().set(opt).from(pdfElement).save();
+}
+
+
+
+  
