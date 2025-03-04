@@ -42,5 +42,25 @@
     <div class="button-container">
       <button id="generatePDFButton" onclick="generatePDF()">Gerar PDF</button>
     </div>
+
+    <script>
+      // Função que define as datas ao carregar a página
+      window.onload = function () {
+        // Obtém a data atual
+        const currentDate = new Date();
+        
+        // Formata a data de início (YYYY-MM-DD)
+        const startFormattedDate = currentDate.toISOString().split('T')[0];
+        document.getElementById('startDateInput').value = startFormattedDate;
+        
+        // Calcula a data fim (6 meses à frente)
+        const endDate = new Date(currentDate);
+        endDate.setMonth(currentDate.getMonth() + 6); // Adiciona 6 meses à data atual
+        
+        // Formata a data de fim (YYYY-MM-DD)
+        const endFormattedDate = endDate.toISOString().split('T')[0];
+        document.getElementById('endDateInput').value = endFormattedDate;
+      };
+    </script>
   </body>
 </html>

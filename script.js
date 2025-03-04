@@ -22,6 +22,12 @@ function createTable(names, startDate, endDate) {
     "Individuais",
   ];
 
+  // Pega a quantidade de nomes digitados
+  const numberOfNames = names.length;
+
+  // Exibe a quantidade de nomes no console (ou você pode exibir em algum lugar na interface)
+  console.log(`Quantidade de nomes digitados: ${numberOfNames}`);
+
   // Limpa a tabela existente
   table.innerHTML = '';
 
@@ -43,33 +49,75 @@ function createTable(names, startDate, endDate) {
 
   let date = new Date(startDate);
   endDate = new Date(endDate);
-  let nameIndex = 0;
 
-  while (date <= endDate) {
-    const row = document.createElement("tr");
+  // Se o número de nomes for 5, aplicamos a lógica de alternância cíclica
+  if (numberOfNames === 5) {
+    let nameIndex = 0; // Índice para a rotação dos nomes
 
-    // Adiciona a data
-    const dateCell = document.createElement("td");
-    dateCell.textContent = date.toLocaleDateString("pt-BR", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-    row.appendChild(dateCell);
+    while (date <= endDate) {
+      const row = document.createElement("tr");
 
-    // Adiciona os nomes alternados e torna as células editáveis
-    headers.slice(1).forEach(() => {
-      const td = document.createElement("td");
-      td.textContent = names[nameIndex];
-      td.contentEditable = "true"; // Torna a célula editável
-      row.appendChild(td);
-      nameIndex = (nameIndex + 1) % names.length; // Alterna entre os nomes
-    });
+      // Adiciona a data
+      const dateCell = document.createElement("td");
+      dateCell.textContent = date.toLocaleDateString("pt-BR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+      row.appendChild(dateCell);
 
-    tbody.appendChild(row);
+      // Alterna os nomes nas 5 colunas, fazendo a rotação
+      for (let colIndex = 1; colIndex <= 5; colIndex++) {
+        const td = document.createElement("td");
 
-    // Avança para o próximo domingo
-    date.setDate(date.getDate() + 7);
+        // Atribui o nome com rotação cíclica
+        td.textContent = names[(nameIndex + colIndex - 1) % 5];
+        td.contentEditable = "true"; // Torna a célula editável
+        row.appendChild(td);
+      }
+
+      tbody.appendChild(row);
+
+      // Avança para a próxima data (a cada 7 dias)
+      date.setDate(date.getDate() + 7);
+
+      // Incrementa o índice para a rotação dos nomes
+      nameIndex = (nameIndex + 1) % 5;
+    }
+  } else {
+    // Se o número de nomes não for 5, aplica a lógica padrão de alternância (como já estava antes)
+    let nameIndex = 0;
+
+    while (date <= endDate) {
+      const row = document.createElement("tr");
+
+      // Adiciona a data
+      const dateCell = document.createElement("td");
+      dateCell.textContent = date.toLocaleDateString("pt-BR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
+      row.appendChild(dateCell);
+
+      // Alterna os nomes nas colunas
+      headers.slice(1).forEach((header, index) => {
+        const td = document.createElement("td");
+
+        // Atribui o nome da pessoa alternando a cada célula (baseado na lógica de 5 nomes)
+        td.textContent = names[nameIndex];
+        td.contentEditable = "true"; // Torna a célula editável
+        row.appendChild(td);
+
+        // A alternância de nomes ocorre aqui (baseada na lógica que você pediu)
+        nameIndex = (nameIndex + 1) % names.length; // Alterna entre os nomes
+      });
+
+      tbody.appendChild(row);
+
+      // Avança para a próxima data (a cada 7 dias)
+      date.setDate(date.getDate() + 7);
+    }
   }
 
   table.appendChild(tbody);
@@ -78,9 +126,12 @@ function createTable(names, startDate, endDate) {
   document.getElementById('generatePDFButton').style.display = 'block';
 }
 
+
 function updateTable() {
   const namesInput = document.getElementById("namesInput").value;
   const names = namesInput.split(",").map(name => name.trim()).filter(name => name); // Remove espaços e nomes vazios
+
+  const numberOfNames = names.length;
 
   const startDateInput = document.getElementById("startDateInput").value;
   const endDateInput = document.getElementById("endDateInput").value;
