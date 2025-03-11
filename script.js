@@ -206,7 +206,7 @@ function generatePDF() {
       const monthName = date.toLocaleString("pt-BR", { month: "long" }); // Exemplo: Janeiro, Fevereiro
 
       // Exibimos o dia e o número do mês no formato "dd/mm" com zero à esquerda quando necessário
-    const dayAndMonth = `${day < 10 ? '0' + day : day}/${month + 1 < 10 ? '0' + (month + 1) : month + 1}`;
+      const dayAndMonth = `${day < 10 ? '0' + day : day}/${month + 1 < 10 ? '0' + (month) : month + 1}`;
 
       // Atualiza a célula da data no PDF com o novo formato
       dateCell.textContent = dayAndMonth; // Exibe no formato "dd Mês"
