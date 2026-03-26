@@ -161,6 +161,28 @@ function updateTable() {
   createTable(names, startDate, endDate);
 }
 
+const botao = document.getElementById('botao-tema');
+const body = document.body;
+
+// Persistência do tema
+const temasalvo = localStorage.getItem('tema');
+const isDarkMode = temasalvo === 'escuro';
+botao.checked = isDarkMode;
+if (isDarkMode) {
+  body.classList.add('escuro');
+}
+
+// Função para alternar entre tema claro e escuro
+botao.addEventListener('change', () => {
+  if (botao.checked) {
+    body.classList.add('escuro');
+    localStorage.setItem('tema', 'escuro');
+  } else {
+    body.classList.remove('escuro');
+    localStorage.setItem('tema', 'claro');
+  }
+});
+
 function generatePDF() {
   const tableElement = document.querySelector("#auxTable");
 
@@ -173,6 +195,12 @@ function generatePDF() {
  
    // Cria o título e o contêiner para o PDF
    const pdfElement = document.createElement('div');
+   
+   // Estilo inline para o PDF sempre ter fundo branco e texto preto (sem herdar estilos escuros)
+   pdfElement.style.backgroundColor = '#ffffff';
+   pdfElement.style.color = '#000000';
+   pdfElement.style.padding = '20px';
+   
    const title = document.createElement('div');
    title.className = 'pdf-title';
    
@@ -181,7 +209,8 @@ function generatePDF() {
    title.style.textAlign = 'center';
    title.style.fontWeight = 'bold';
    title.style.fontSize = '18px';
-   title.style.marginBottom = '20px'; // Adiciona espaçamento abaixo do título
+   title.style.marginBottom = '20px';
+   title.style.color = '#000000'; // Garante texto preto no PDF
    
    pdfElement.appendChild(title);
 
@@ -230,10 +259,14 @@ function generatePDF() {
     monthTitle.style.textAlign = 'center'; // Centraliza o título
     monthTitle.style.fontWeight = 'bold'; // Aplica o negrito ao título do mês
     monthTitle.style.marginTop = '20px'; // Adiciona margem superior para separar do conteúdo anterior
+    monthTitle.style.color = '#000000'; // Garante texto preto
     pdfElement.appendChild(monthTitle);
 
     // Cria a tabela para esse mês
     const monthTable = document.createElement('table');
+    monthTable.style.backgroundColor = '#ffffff';
+    monthTable.style.color = '#000000';
+    monthTable.style.borderCollapse = 'collapse';
 
     // Adiciona o cabeçalho à tabela
     const thead = document.createElement('thead');
@@ -243,6 +276,10 @@ function generatePDF() {
     headers.forEach(headerText => {
       const th = document.createElement('th');
       th.textContent = headerText;
+      th.style.border = '1px solid #000';
+      th.style.backgroundColor = '#f0f0f0';
+      th.style.color = '#000000';
+      th.style.padding = '8px';
       headerRow.appendChild(th);
     });
 
@@ -252,6 +289,14 @@ function generatePDF() {
     // Adiciona as linhas desse mês à tabela
     const tbody = document.createElement('tbody');
     monthsGrouped[month].forEach(row => {
+      // Aplica estilos às células das linhas
+      const cells = row.querySelectorAll('td');
+      cells.forEach(cell => {
+        cell.style.border = '1px solid #000';
+        cell.style.color = '#000000';
+        cell.style.backgroundColor = '#ffffff';
+        cell.style.padding = '8px';
+      });
       tbody.appendChild(row);
     });
 

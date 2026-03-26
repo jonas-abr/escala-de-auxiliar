@@ -139,3 +139,149 @@ body {
       min-width: 100%; /* Garante que o wrapper da tabela ocupe 100% da largura do contêiner */
     }
   }
+
+  /* MODO ESCURO */
+  body.escuro {
+    background-color: #121212;
+    color: #ffffff;
+  }
+
+  body.escuro h1 {
+    color: #ffffff;
+  }
+
+  body.escuro .input-group label {
+    color: #ffffff;
+  }
+
+  body.escuro input,
+  body.escuro select {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border: 1px solid #333;
+  }
+
+  body.escuro input[type="date"],
+  body.escuro input[type="date"]::-webkit-calendar-picker-indicator {
+    color-scheme: dark;
+  }
+
+  body.escuro input[type="date"] {
+    background-color: #1e1e1e;
+    color: #ffffff;
+  }
+
+  body.escuro input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+    border-radius: 4px;
+    margin-right: 2px;
+    opacity: 0.6;
+    filter: invert(0.8);
+  }
+
+  body.escuro input[type="date"]::-webkit-calendar-picker-indicator:hover {
+    opacity: 1;
+  }
+
+  body.escuro table,
+  body.escuro th,
+  body.escuro td {
+    border: 1px solid #555;
+    color: #ffffff;
+  }
+
+  body.escuro th {
+    background-color: #333;
+  }
+
+  body.escuro td[contenteditable="true"] {
+    background-color: #2a2a2a;
+  }
+
+  body.escuro .alert {
+    color: #f8d7da;
+    background-color: #5a1c1c;
+    border-color: #a94442;
+  }
+
+  body.escuro button {
+    background-color: #444;
+    color: #fff;
+  }
+
+  body.escuro button:hover {
+    background-color: #666;
+  }
+
+  /* Toggle Switch para Modo Escuro */
+  .theme-toggle-container {
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .theme-label {
+    font-weight: bold;
+    font-size: 0.95em;
+    color: #333;
+    min-width: 80px;
+    text-align: center;
+  }
+
+  .theme-label.theme-light {
+    text-align: right;
+  }
+
+  .theme-label.theme-dark {
+    text-align: left;
+  }
+
+  body.escuro .theme-label {
+    color: #ffffff;
+  }
+
+  .theme-toggle-input {
+    display: none;
+  }
+
+  .theme-toggle-label {
+    width: 70px;
+    height: 35px;
+    background-color: #ccc;
+    border-radius: 20px;
+    cursor: pointer;
+    position: relative;
+    transition: background-color 0.3s ease;
+    display: block;
+  }
+
+  .theme-toggle-label::after {
+    content: '';
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: white;
+    border-radius: 50%;
+    top: 2.5px;
+    left: 3px;
+    transition: left 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  }
+
+  .theme-toggle-input:checked + .theme-toggle-label {
+    background-color: #555;
+  }
+
+  .theme-toggle-input:checked + .theme-toggle-label::after {
+    left: 37px;
+  }
+
+  body.escuro .theme-toggle-label {
+    background-color: #444;
+  }
+
+  body.escuro .theme-toggle-input:checked + .theme-toggle-label {
+    background-color: #666;
+  }

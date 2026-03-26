@@ -3,13 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Aplicação para gerenciar escala de auxiliares da congregação" />
+    <meta name="theme-color" content="#007bff" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Auxiliares" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect fill='%23007bff' width='192' height='192'/><text x='50%' y='50%' font-size='80' font-weight='bold' fill='white' text-anchor='middle' dy='.3em'>LA</text></svg>" />
+    <link rel="manifest" href="manifest.json" />
     <title>Lista de Auxiliares</title>
     <link rel="stylesheet" href="style.css" /> <!-- Link para o arquivo CSS -->
-    <script src="script.js"></script>
+    <script src="script.js" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script>
+      // Registra o Service Worker
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('service-worker.js').then(reg => {
+          console.log('Service Worker registrado com sucesso:', reg);
+        }).catch(err => {
+          console.log('Erro ao registrar Service Worker:', err);
+        });
+      }
+    </script>
   </head>
   <body>
     <h1>Lista de Auxiliares</h1>
+
+    <div class="theme-toggle-container">
+      <span class="theme-label theme-light">☀️ Claro</span>
+      <input type="checkbox" id="botao-tema" class="theme-toggle-input" />
+      <label for="botao-tema" class="theme-toggle-label"></label>
+      <span class="theme-label theme-dark">🌙 Escuro</span>
+    </div>
 
     <div class="input-group">
       <label for="namesInput">Insira os nomes separados por vírgula:</label>
@@ -77,6 +101,7 @@
       <button id="generatePDFButton" onclick="generatePDF()">Gerar PDF</button>
     </div>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
     <script>
       // Função que define as datas ao carregar a página
       window.onload = function () {
